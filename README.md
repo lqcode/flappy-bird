@@ -7,3 +7,4 @@
 
 - C++
 - SDL3
+- cmake
