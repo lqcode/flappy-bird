@@ -1,26 +1,20 @@
 //
-// Created by nikita on 12.02.2025.
+// Created by nikita on 15.02.2025.
 //
 
 #ifndef GAME_H
 #define GAME_H
+#include <cstdint>
 
-#include <vulkan/vulkan.h>
+namespace game {
+    class Game {
+    public:
+        void init();
 
-class Game {
-public:
-    explicit Game(VkInstance vkInstance);
+        bool update(uint64_t delta);
 
-    void init();
-
-    void update(unsigned long delta);
-
-    void render();
-
-    void quit();
-
-private:
-    VkInstance vkInstance;
-};
+        void render();
+    };
+} // game
 
 #endif //GAME_H
