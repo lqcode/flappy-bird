@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(Flappy-Bird)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 
 find_package(SDL3 REQUIRED)
 include_directories(${SDL3_INCLUDE_DIRS})
@@ -27,3 +27,5 @@ add_executable(flappy-bird
 )
 
 target_link_libraries(flappy-bird ${SDL3_LIBRARIES} glm::glm Vulkan::Vulkan Boost::log)
+
+set_property(TARGET flappy-bird PROPERTY COMPILE_WARNING_AS_ERROR ON)

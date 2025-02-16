@@ -4,10 +4,11 @@
 
 #include "Vulkan.h"
 
-void Vulkan::init() {
-    pickGraphicsCard();
-}
+namespace eng {
+    void Vulkan::init() {
+        pickGraphicsCard();
+    }
 
-void Vulkan::pickGraphicsCard() {
+    void Vulkan::pickGraphicsCard() {
+    }
 }
-

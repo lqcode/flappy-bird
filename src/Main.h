@@ -6,7 +6,6 @@
 #define MAIN_H
 
 #include <string>
-#include <vector>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
 
@@ -33,19 +32,15 @@
 #define WINDOW_HEIGHT 720
 #define WINDOW_FLAGS SDL_WINDOW_VULKAN
 
-#define ARG_FLAG_SIGN "--"
-#define ARG_FLAG_SIGN_LEN 2
-#define ARG_DEBUG_FLAG "debug"
-
 #define UPDATE_PERIOD_MS 16ull
 
 class Main {
+public:
     struct CmdArgs {
-        bool debugMode = false;
+        bool debugMode;
     };
 
-public:
-    explicit Main(const std::vector<std::string> &rawArgs): rawArgs(rawArgs) {
+    explicit Main(const CmdArgs &cmdArgs): cmdArgs(cmdArgs) {
     }
 
     ~Main() {
@@ -61,17 +56,14 @@ public:
     SDL_AppResult update();
 
 private:
-    const std::vector<std::string> &rawArgs;
+    const CmdArgs &cmdArgs;
 
-    eng::Window *window = nullptr;
+    eng::Window *window{};
+    eng::Vulkan *vulkan{};
 
-    Vulkan *vulkan = nullptr;
+    game::Game *game{};
 
-    uint64_t lastUpdateTime = 0;
-
-    game::Game *game = nullptr;
-
-    static CmdArgs parseArgs(const std::vector<std::string> &rawArgs);
+    uint64_t lastUpdateTime{};
 
     static VkInstance createVulkan(bool debug);
 };

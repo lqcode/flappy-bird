@@ -4,6 +4,8 @@
 
 #include "Game.h"
 
+#include <stdexcept>
+
 namespace game {
     void Game::init() {
     }

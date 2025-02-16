@@ -3,20 +3,23 @@
 //
 
 #define SDL_MAIN_USE_CALLBACKS
-#include <iostream>
 #include <SDL3/SDL_main.h>
 
 #include <Main.h>
 #include <vector>
 #include <string>
 
-SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
-    std::vector<std::string> args(argc);
-    for (int i = 0; i < argc; ++i) {
-        args.at(i) = argv[i];
-    }
+#define ARG_FLAG_SIGN "--"
+#define ARG_FLAG_SIGN_LEN 2
+#define ARG_DEBUG_FLAG "debug"
 
-    auto m = new Main(args);
+void parseArgs(int argc, char **argv, Main::CmdArgs *cmdArgs);
+
+SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv) {
+    auto cmdArgs{new Main::CmdArgs};
+    parseArgs(argc, argv, cmdArgs);
+
+    const auto m = new Main(*cmdArgs);
     *appstate = m;
 
     const auto result = m->init();
@@ -41,7 +44,24 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 }
 
 void SDL_AppQuit(void *appstate, const SDL_AppResult result) {
-    const auto m = static_cast<Main *>(appstate);
+    if (result != SDL_APP_SUCCESS) {
+        SDL_Log("An fatal error occurred and the application was closed :(");
+    }
 
+    const auto m = static_cast<Main *>(appstate);
     delete m;
+}
+
+void parseArgs(const int argc, char **argv, Main::CmdArgs *cmdArgs) {
+    for (int i{}; i < argc; ++i) {
+        const auto &arg = std::string(argv[i]);
+        if (arg.rfind(ARG_FLAG_SIGN) != 0) {
+            continue;
+        }
+
+        const std::string flag(arg.begin() + ARG_FLAG_SIGN_LEN, arg.end());
+        if (flag == ARG_DEBUG_FLAG) {
+            cmdArgs->debugMode = true;
+        }
+    }
 }

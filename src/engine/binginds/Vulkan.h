@@ -7,23 +7,24 @@
 
 #include <vulkan/vulkan.h>
 
-class Vulkan {
-public:
-    explicit Vulkan(VkInstance vkInstance) : vkInstance(vkInstance) {
-    }
+namespace eng {
+    class Vulkan {
+    public:
+        explicit Vulkan(VkInstance vkInstance) : vkInstance(vkInstance) {
+        }
 
-    ~Vulkan() {
-        vkDestroyInstance(vkInstance, nullptr);
-    }
+        ~Vulkan() {
+            vkDestroyInstance(vkInstance, nullptr);
+        }
 
-    void init();
+        void init();
 
-private:
-    VkInstance vkInstance;
-    VkPhysicalDevice card;
+    private:
+        VkInstance vkInstance;
+        VkPhysicalDevice card;
 
-    void pickGraphicsCard();
-};
-
+        void pickGraphicsCard();
+    };
+} // eng
 
 #endif //VULKAN_H
