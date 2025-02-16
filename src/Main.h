@@ -5,16 +5,11 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <string>
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_vulkan.h>
 
 #include "engine/binginds/Window.h"
 
-#include <boost/format.hpp>
 #include <boost/log/trivial.hpp>
-
-#include <vulkan/vulkan.h>
 
 #include "engine/binginds/Vulkan.h"
 #include "game/Game.h"
@@ -64,8 +59,6 @@ private:
     game::Game *game{};
 
     uint64_t lastUpdateTime{};
-
-    static VkInstance createVulkan(bool debug);
 };
 
 

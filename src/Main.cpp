@@ -24,9 +24,15 @@ SDL_AppResult Main::init() {
    }
    this->window = new eng::Window(window);
 
+   const eng::Vulkan::CreateInfo createInfo{
+      .debugMode = this->cmdArgs.debugMode,
+      .applicationName = APP_NAME,
+      .applicationVersion = APP_VERSION_UINT,
+      .engineName = ENGINE_NAME,
+      .engineVersion = ENGINE_VERSION,
+   };
    try {
-      const auto instance = createVulkan(this->cmdArgs.debugMode);
-      this->vulkan = new eng::Vulkan(instance);
+      this->vulkan = new eng::Vulkan(createInfo);
       this->vulkan->init();
    } catch (std::exception &e) {
       BOOST_LOG_TRIVIAL(fatal) << "Failed to create vulkan: " << e.what();
@@ -77,48 +83,4 @@ SDL_AppResult Main::update() {
    return SDL_APP_CONTINUE;
 }
 
-VkInstance Main::createVulkan(bool debug) {
-   uint32_t instanceExtensionsCount{};
-   auto instanceExtensions = SDL_Vulkan_GetInstanceExtensions(&instanceExtensionsCount);
-   if (instanceExtensions == nullptr) {
-      auto fmt{boost::format("failed to get instance extensions: %1%") % SDL_GetError()};
-      throw std::runtime_error(fmt.str());
-   }
-
-   BOOST_LOG_TRIVIAL(debug) << "Supported Vulkan instance extensions: ";
-   for (int i{}; i < instanceExtensionsCount; ++i) {
-      BOOST_LOG_TRIVIAL(debug) << i + 1 << ". " << instanceExtensions[i];
-   }
-
-   std::vector<const char *> enabledLayers{};
-   if (debug) {
-      enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
-      BOOST_LOG_TRIVIAL(debug) << "Vulkan validation layer is enabled";
-   }
-
-   VkApplicationInfo appInfo{};
-   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-   appInfo.pApplicationName = APP_NAME;
-   appInfo.applicationVersion = APP_VERSION_UINT;
-   appInfo.pEngineName = ENGINE_NAME;
-   appInfo.engineVersion = ENGINE_VERSION;
-   appInfo.apiVersion = VK_API_VERSION_1_3;
-
-   VkInstanceCreateInfo createInfo{};
-   createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-   createInfo.pApplicationInfo = &appInfo;
-   createInfo.enabledExtensionCount = instanceExtensionsCount;
-   createInfo.ppEnabledExtensionNames = instanceExtensions;
-   createInfo.enabledLayerCount = enabledLayers.size();
-   createInfo.ppEnabledLayerNames = enabledLayers.data();
-
-   VkInstance instance{};
-   const auto result{vkCreateInstance(&createInfo, nullptr, &instance)};
-   if (result != VK_SUCCESS) {
-      auto fmt{boost::format("error occurred vkCreateInstance, result: %1%") % result};
-      throw std::runtime_error(fmt.str());
-   }
-
-   return instance;
-}
 
